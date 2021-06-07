@@ -1,31 +1,87 @@
 body {
-
+    background-image: url("./background_image.jpg'");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
 }
 
 body::-webkit-scrollbar {
-    
+    width: auto;
 }
 
-background {
-
+body::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5 px rgba(2, 0, 2, 0.5);
 }
 
-div {
-
+body::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    outline: 2 px solid slategray;
 }
 
-p {
+.classComponentCSS {
+    background-repeat: no-repeat;
+    background-color: yellow;
+    border: mediumspringgreen;
+    font-size: medium;
+}
 
+.projectComponentCSS {
+    background-repeat: no-repeat;
+    background-color: yellow;
+    border: mediumspringgreen;
+    font-size: medium;
+}
+
+.descriptionComponentCSS {
+    background-repeat: no-repeat;
+    background-color: yellow;
+    border: mediumspringgreen;
+    font-size: medium;
+}
+
+.isImportantComponentCSS {
+    background-repeat: no-repeat;
+    background-color: yellow;
+    border: mediumspringgreen;
+    font-size: medium;
+}
+
+.dueDateComponentCSS {
+    background-repeat: no-repeat;
+    background-color: yellow;
+    border: mediumspringgreen;
+    font-size: medium;
+}
+
+.addButtonCSS {
+    background-color: whitesmoke;
+    border:black;
+    text-align: center;
+    text-decoration: chocolate;
+    font-size: small;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.deleteButtonCSS {
+    background-color: whitesmoke;
+    border:black;
+    text-align: center;
+    text-decoration: chocolate;
+    font-size: small;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 h1 {
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
+}
 
+p {
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 h2 {
-
-}
-
-h3 {
-
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
 }

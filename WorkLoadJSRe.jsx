@@ -46,9 +46,11 @@ window.addEventListener("load", () => {
         console.log('Setup is complete for the database');
     };
 
-    const form = document.getElementById('workLoadMaker');
+    const adderForm = document.getElementById('workLoadAdder');
+    adderForm.onsubmit = addWorkLoadData;
 
-    form.onsubmit = addWorkLoadData;
+    const deleterForm = document.getElementById('workLoadDeleter');
+    deleterForm.onsubmit = deleteWorkData;
 });
 
 class WorkLoadApp extends React.Component {
@@ -58,23 +60,27 @@ class WorkLoadApp extends React.Component {
 
     render(){
         <div class="main-div">
-            <ClassComponent />
+            <ClassComponent class="classComponentCSS"/>
             
-            <ProjectComponent />
+            <ProjectComponent class="projectComponentCSS"/>
 
-            <DescriptionComponent />
+            <DescriptionComponent class="descriptionComponentCSS"/>
 
-            <DueDateComponent />
+            <DueDateComponent class="dueDateComponentCSS"/>
 
-            <IsImportantComponent />
+            <IsImportantComponent class="isImportantComponentCSS"/>
 
-            <button id="addButton" value={addWorkLoadData}>
-                Add Item
-            </button>
+            <form id="workLoadAdder">
+                <button id="addButton" class="addButtonCSS" value={addWorkLoadData}>
+                    Add Item
+                </button>
+            </form>
 
-            <button id="deleteButton" value={deleteWorkData}>
-                Delete Item
-            </button>
+            <form id="workLoadDeleter">
+                <button id="deleteButton" class="deleteButtonCSS" value={deleteWorkData}>
+                    Delete Item
+                </button>
+            </form>
         </div>
     }
 }
