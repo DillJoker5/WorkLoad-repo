@@ -8,6 +8,8 @@ export class ClassComponent extends React.Component {
     }
 
     render(){
-
+        <div>
+            
+        </div>
     }
 }
