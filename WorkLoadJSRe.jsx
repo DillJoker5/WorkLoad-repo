@@ -8,7 +8,7 @@ import { addWorkLoadData } from './Functions/AddWorkLoadData';
 import { deleteWorkData } from './Functions/DeleteWorkData';
 
 //database where I will keep all of my workload items
-let workloadDB;
+export let workloadDB;
 
 //load event listener
 window.addEventListener("load", () => {
@@ -60,24 +60,27 @@ class WorkLoadApp extends React.Component {
 
     render(){
         <div class="main-div">
-            <ClassComponent class="classComponentCSS"/>
+            <h1>WorkLoad List</h1>
+            <ul id="workLoadList">
+                <ClassComponent className="classComponentCSS" id={this.ClassComponent.id}/>
             
-            <ProjectComponent class="projectComponentCSS"/>
+                <ProjectComponent className="projectComponentCSS" id={this.ProjectComponent.id}/>
 
-            <DescriptionComponent class="descriptionComponentCSS"/>
+                <DescriptionComponent className="descriptionComponentCSS" id={this.DescriptionComponent.id}/>
 
-            <DueDateComponent class="dueDateComponentCSS"/>
+                <DueDateComponent className="dueDateComponentCSS" id={this.DueDateComponent.id}/>
 
-            <IsImportantComponent class="isImportantComponentCSS"/>
-
+                <IsImportantComponent className="isImportantComponentCSS" id={this.IsImportantComponent.id}/>
+            </ul>
+            <h2>Add an Item</h2>
             <form id="workLoadAdder">
-                <button id="addButton" class="addButtonCSS" value={addWorkLoadData}>
+                <button id="addButton" className="addButtonCSS" value={addWorkLoadData}>
                     Add Item
                 </button>
             </form>
-
+            <h2>Delete an Item</h2>
             <form id="workLoadDeleter">
-                <button id="deleteButton" class="deleteButtonCSS" value={deleteWorkData}>
+                <button id="deleteButton" className="deleteButtonCSS" value={deleteWorkData}>
                     Delete Item
                 </button>
             </form>
