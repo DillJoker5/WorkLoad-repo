@@ -1,14 +1,21 @@
+/*
+    Created By Dylan Chirigotis 6/1/2021
+    Tested By Dylan Chirigotis
+    Last Updated 6/23/2021
+
+    WorkLoad Project
+
+    Program keeps track of your work and applies CRUD functionality to an agenda-like list
+
+    Github Repo: https://github.com/DillJoker5/WorkLoad-repo/tree/development
+*/
+
 //imports
-import { ProjectComponent } from './Components/WorkLoadClassComponent';
-import { DueDateComponent } from './Components/WorkLoadDueDateComponent';
-import { ClassComponent } from './Components/WorkLoadClassComponent';
-import { DescriptionComponent } from './Components/WorkLoadDescriptionComponent';
-import { IsImportantComponent } from './Components/WorkLoadIsImportantComponent';
-import { addWorkLoadData } from './Functions/AddWorkLoadData';
-import { deleteWorkData } from './Functions/DeleteWorkData';
+import WorkLoadComponent from "./Components/WorkLoadComponent";
+
 
 //database where I will keep all of my workload items
-export let workloadDB;
+let workloadDB;
 
 //load event listener
 window.addEventListener("load", () => {
@@ -45,45 +52,18 @@ window.addEventListener("load", () => {
 
         console.log('Setup is complete for the database');
     };
-
-    const adderForm = document.getElementById('workLoadAdder');
-    adderForm.onsubmit = addWorkLoadData;
-
-    const deleterForm = document.getElementById('workLoadDeleter');
-    deleterForm.onsubmit = deleteWorkData;
 });
 
-class WorkLoadApp extends React.Component {
-    constructor(props){
-        super(props);
-    }
+function App() {
 
-    render(){
+    return(
         <div class="main-div">
             <h1>WorkLoad List</h1>
             <ul id="workLoadList">
-                <ClassComponent className="classComponentCSS" id={this.ClassComponent.id}/>
-            
-                <ProjectComponent className="projectComponentCSS" id={this.ProjectComponent.id}/>
-
-                <DescriptionComponent className="descriptionComponentCSS" id={this.DescriptionComponent.id}/>
-
-                <DueDateComponent className="dueDateComponentCSS" id={this.DueDateComponent.id}/>
-
-                <IsImportantComponent className="isImportantComponentCSS" id={this.IsImportantComponent.id}/>
+                <WorkLoadComponent />
             </ul>
-            <h2>Add an Item</h2>
-            <form id="workLoadAdder">
-                <button id="addButton" className="addButtonCSS" value={addWorkLoadData}>
-                    Add Item
-                </button>
-            </form>
-            <h2>Delete an Item</h2>
-            <form id="workLoadDeleter">
-                <button id="deleteButton" className="deleteButtonCSS" value={deleteWorkData}>
-                    Delete Item
-                </button>
-            </form>
         </div>
-    }
+    );
 }
+
+App();

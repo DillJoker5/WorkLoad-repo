@@ -1,6 +1,7 @@
 //imports
 import React, { useState, useEffect } from "react";
-
+import { TranslateBoolean } from '../Functions/translateBoolean';
+import { getErrorMessage } from './ErrorMessages';
 
 //Component Definition
 export default function WorkLoadComponent(){
@@ -10,9 +11,58 @@ export default function WorkLoadComponent(){
     const [project, setProject] = useState('');
     const [dueDate, setDueDate] = useState('');
     const [isImportant, setIsImportant] = useState(false);
+    const [message, setMessage] = useState('');
+    const [displayOn, setDisplayOn] = useState(false);
+    const [displayOff, setDisplayOff] = useState(false);
 
     const [emptyTable, setEmptyTable] = useState(false);
     const [displayData, setDisplayData] = useState(true);
+
+    const addWorkLoadItem = () => {
+        setEmptyTable(true);
+        setDisplayData(false);
+    };
+
+    const deleteWorkLoadItem = (deleteItemName) => {
+        setEmptyTable(true);
+        setDisplayData(false);
+    };
+
+    const updateWorkLoadItem = (updateItemName) => {
+        setEmptyTable(true);
+        setDisplayData(false);
+    };
+
+    const toggleDisplayData = (event) => {
+        if(event.target.value === displayOn){
+            setEmptyTable(false);
+            setDisplayData(true);
+            setDisplayOn(true);
+            setDisplayOff(false);
+            return;
+        }
+        else if(event.target.value === displayOff){
+            setEmptyTable(true);
+            setDisplayData(false);
+            setDisplayOn(false);
+            setDisplayOff(true);
+            return;
+        }
+        else {
+            setMessage(getErrorMessage('toggleDisplay'));
+            setEmptyTable(true);
+            setDisplayData(false);
+            setDisplayOff(false);
+            setDisplayOn(false);
+            return;
+        }
+    };
+
+    const displayEmptyTableMessage = () => {
+        if(emptyTable){
+            setMessage(getErrorMessage('emptyTable'));
+        }
+    };
 
     useEffect(() => {
         const getWorkLoadData = () => {
@@ -47,8 +97,9 @@ export default function WorkLoadComponent(){
                             <td>{itemRep.project}</td>
                             <td>{itemRep.description}</td>
                             <td>{itemRep.dueDate}</td>
-                            <td>{itemRep.isImportant}</td>
+                            <td>{TranslateBoolean(itemRep.isImportant)}</td>
                         </tr>
+                    );
                 });
                 const table = (
                     <table>
@@ -66,23 +117,34 @@ export default function WorkLoadComponent(){
                 );
                 setItems(table);
             }
-        }, [setEmptyTable, setDisplayData, setClas, setProject, setDescription, setDueDate, setIsImportant, setItems]);
+        };
+    }, []);
 
     return (
-
+        <div>
+            <div className='buttons'>
+                <button className='createButton' onClick={addWorkLoadItem}>Create Item</button>
+                <button className='updateButton' onClick={updateWorkLoadItem}>Update Item</button>
+                <button className='deleteButton' onClick={deleteWorkLoadItem}>Delete Item</button>
+            </div>
+            <h1>WorkLoad List</h1>
+            {emptyTable && displayEmptyTableMessage}
+            {!emptyTable && displayData && getWorkLoadData}
+            <div className='buttons'>
+                <button value={displayOn} className='displayDataButton' onClick={toggleDisplayData}>Display On</button>
+                <button value={displayOff} className='displayDataButton' onClick={toggleDisplayData}>Display Off</button>
+            </div>
+            {message}
+        </div>
     );
 }
 
 /*
-1) Return statement in this component
-    1.1) Add Toggle Display Button
-    1.2) Add Create Item Button
-    1.3) Add Update Item Button
-    1.4) Add Delete Item Button
-2) Add CSS to this component
-3) Redo outside jsx file
-4) Run this project
-5) Use TranslateBoolean Function
-6) Add signature to outside jsx file
-7) Fix errors & add error messaging to stuff
+1) Add CSS to this component
+2) Develop WorkLoadJSRE.jsx once components, functions, and css is done
+3) Run this project
+4) Add error messaging as project develops
+5) Develop addWorkLoadItem
+6) Develop updateWorkLoadItem
+7) Develop deleteWorkLoadItem
 */
