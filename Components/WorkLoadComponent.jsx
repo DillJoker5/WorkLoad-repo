@@ -5,7 +5,10 @@ import { getErrorMessage } from './ErrorMessages';
 
 //Component Definition
 export default function WorkLoadComponent(){
+    const backText = 'BACK';
+
     const [items, setItems] = useState([]);
+    const [currentItem, setCurrentItem] = useState(null);
     const [clas, setClas] = useState('');
     const [description, setDescription] = useState('');
     const [project, setProject] = useState('');
@@ -14,23 +17,58 @@ export default function WorkLoadComponent(){
     const [message, setMessage] = useState('');
     const [displayOn, setDisplayOn] = useState(false);
     const [displayOff, setDisplayOff] = useState(false);
+    const [createPage, setCreatePage] = useState(false);
+    const [updatePage, setUpdatePage] = useState(false);
 
     const [emptyTable, setEmptyTable] = useState(false);
     const [displayData, setDisplayData] = useState(true);
+    
+    const htmlIds = {
+        clas: 'clas',
+        project: 'project',
+        description: 'description',
+        dueDate: 'dueDate',
+        isImportant: 'isImportant'
+    };
 
-    const addWorkLoadItem = () => {
+    const showItem = (item) => {
+        setCurrentItem(item);
+        setDisplayData(true);
+        setMessage(null);
+    };
+
+    const showItems = () => {
+        setDisplayData(false);
+        setMessage(null);
+    }
+
+    const showCreatePage = () => {
+        setCreatePage(true);
         setEmptyTable(true);
         setDisplayData(false);
     };
 
-    const deleteWorkLoadItem = (deleteItemName) => {
+    const showUpdatePage = (updateItemName) => {
+        setUpdatePage(true);
         setEmptyTable(true);
         setDisplayData(false);
     };
 
-    const updateWorkLoadItem = (updateItemName) => {
+    const deleteWorkLoadItem = (deleteItem) => {
         setEmptyTable(true);
         setDisplayData(false);
+
+        if(deleteItem.id){
+            for(let i = 0; i < items.length; i++){
+                if(item.id === deleteItem.id){
+                    items.splice(i, 1);
+                }
+            }
+        }
+        else{
+            setMessage(getErrorMessage('itemWithNoId'));
+        }
+        alert({deleteItem} + 'has been deleted from your work load list!');
     };
 
     const toggleDisplayData = (event) => {
@@ -64,18 +102,82 @@ export default function WorkLoadComponent(){
         }
     };
 
+    const submit = async() => {
+        const clasHtml = document.getElementById(htmlIds.clas);
+        const projectHtml = document.getElementById(htmlIds.project);
+        const descriptionHtml = document.getElementById(htmlIds.description);
+        const dueDateHtml = document.getElementById(htmlIds.dueDate);
+        const isImportantHtml = document.getElementById(htmlIds.isImportant);
+
+        if(!clasHtml || !projectHtml || !descriptionHtml || !dueDateHtml || isImportantHtml){
+            setMessage(getErrorMessage('cannotRetrieveHTMLElements'));
+            return;
+        }
+
+        const id;
+
+        if(currentItem.id){
+            id = currentItem.id;
+        }
+        else{
+            const newIdNumber = items.length + 1;
+            id= ('item'+newIdNumber);
+        }
+
+        const item = {
+            id: id,
+            clas: clasHtml.value,
+            project: projectHtml.value,
+            description: descriptionHtml.value,
+            dueDate: dueDateHtml.value,
+            isImportant: isImportantHtml.value
+        }
+
+        if(items.includes(item.id)){
+            for(let i = 0; i < items.length; i++){
+                if(items[i].id === item.id){
+                    items[i] = item;
+                }
+            }
+            alert('Successfully updated ' + item + ' in the work load list!');
+        }
+        else{
+            items.push(item);
+            alert('Successfully added ' + item + ' to the work load list!');
+        }
+    }
+
     useEffect(() => {
         const getWorkLoadData = () => {
             setEmptyTable(true);
             setDisplayData(false);
 
-            const response = [{
-                clas: 'CSC 391',
-                description: 'programming project',
-                project: 'self REACT project',
-                dueDate: 'August 20th',
-                isImportant: true
-            }];
+            const response = [
+                {
+                    id: 'item1',
+                    clas: 'CSC 391',
+                    project: 'self REACT project',
+                    description: 'programming project',
+                    dueDate: 'August 20th',
+                    isImportant: true
+                },
+                {
+                    id: 'item2',
+                    clas: 'none',
+                    project: 'User Permissions Project',
+                    description: '2021 internship project for the admin portion of HealthIOs portal',
+                    dueDate: 'August 20th',
+                    isImportant: true
+                },
+                {
+                    id: 'item3',
+                    clas: 'none',
+                    project: 'Unity Personal Learning',
+                    description: 'summer personal learning project',
+                    dueDate: 'None',
+                    isImportant: false
+                }
+            ];
 
             if(typeof response === 'string'){
                 setEmptyTable(true);
@@ -91,8 +193,9 @@ export default function WorkLoadComponent(){
                     setDueDate(itemRep.dueDate);
                     setIsImportant(itemRep.isImportant);
                     const numOfItems = ++i;
+                    const itemId = itemRep.id;
                     return (
-                        <tr id={i}>
+                        <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
                             <td>{itemRep.clas}</td>
                             <td>{itemRep.project}</td>
                             <td>{itemRep.description}</td>
@@ -123,13 +226,52 @@ export default function WorkLoadComponent(){
     return (
         <div>
             <div className='buttons'>
-                <button className='createButton' onClick={addWorkLoadItem}>Create Item</button>
-                <button className='updateButton' onClick={updateWorkLoadItem}>Update Item</button>
+                <button className='createButton' onClick={showCreatePage}>Create Item</button>
+                <button className='updateButton' onClick={showUpdatePage}>Update Item</button>
                 <button className='deleteButton' onClick={deleteWorkLoadItem}>Delete Item</button>
+                {displayData && <button onClick={() => showItems()}>{backText}</button>}
             </div>
             <h1>WorkLoad List</h1>
             {emptyTable && displayEmptyTableMessage}
             {!emptyTable && displayData && getWorkLoadData}
+            {createPage && (
+                <div className=''>
+                    <form autoComplete='off' className=''>
+                        <label htmlFor={htmlIds.clas}>Class: </label>
+                        <input id={htmlIds.clas} />
+                        <label htmlFor={htmlIds.project}>Project: </label>
+                        <input id ={htmlIds.project} />
+                        <label htmlFor={htmlIds.description}>Description: </label>
+                        <input id={htmlIds.description} />
+                        <label htmlFor={htmlIds.dueDate}>Due Date: </label>
+                        <input id={htmlIds.dueDate} />
+                        <label htmlFor={htmlIds.isImportant}>Is this item important: </label>
+                        <input id={htmlIds.isImportant} />
+                    </form>
+                    <div className=''>
+                        <button onClick={() => submit()}>SUBMIT</button>
+                    </div>
+                </div>
+            )}
+            {updatePage && (
+                <div className=''>
+                    <form autoComplete='off' className=''>
+                        <label htmlFor={htmlIds.clas}>Class: </label>
+                        <input id={htmlIds.clas} defaultValue={currentItem.clas} />
+                        <label htmlFor={htmlIds.project}>Project: </label>
+                        <input id ={htmlIds.project} defaultValue={currentItem.project} />
+                        <label htmlFor={htmlIds.description}>Description: </label>
+                        <input id={htmlIds.description} defaultValue={currentItem.description} />
+                        <label htmlFor={htmlIds.dueDate}>Due Date: </label>
+                        <input id={htmlIds.dueDate} defaultValue={currentItem.dueDate} />
+                        <label htmlFor={htmlIds.isImportant}>Is this item important: </label>
+                        <input id={htmlIds.isImportant} defaultValue={currentItem.isImportant} />
+                    </form>
+                    <div className=''>
+                        <button onClick={() => submit()}>SUBMIT</button>
+                    </div>
+                </div>
+            )}
             <div className='buttons'>
                 <button value={displayOn} className='displayDataButton' onClick={toggleDisplayData}>Display On</button>
                 <button value={displayOff} className='displayDataButton' onClick={toggleDisplayData}>Display Off</button>
@@ -141,10 +283,8 @@ export default function WorkLoadComponent(){
 
 /*
 1) Add CSS to this component
-2) Develop WorkLoadJSRE.jsx once components, functions, and css is done
+2) Develop WorkLoadJSRE.jsx once components, functions, and css is done - all current imports are done
 3) Run this project
 4) Add error messaging as project develops
-5) Develop addWorkLoadItem
-6) Develop updateWorkLoadItem
-7) Develop deleteWorkLoadItem
+5) Create submit function - in progress until create and update function is done
 */

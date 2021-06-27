@@ -1,7 +1,7 @@
 /*
     Created By Dylan Chirigotis 6/1/2021
     Tested By Dylan Chirigotis
-    Last Updated 6/23/2021
+    Last Updated 6/26/2021
 
     WorkLoad Project
 
@@ -12,6 +12,8 @@
 
 //imports
 import WorkLoadComponent from "./Components/WorkLoadComponent";
+import { getErrorMessage } from './Components/ErrorMessages';
+import './CSS/WorkLoadCS.css';
 
 
 //database where I will keep all of my workload items
@@ -59,9 +61,7 @@ function App() {
     return(
         <div class="main-div">
             <h1>WorkLoad List</h1>
-            <ul id="workLoadList">
-                <WorkLoadComponent />
-            </ul>
+            <WorkLoadComponent />
         </div>
     );
 }
