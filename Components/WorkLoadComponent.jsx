@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { TranslateBoolean } from '../Functions/translateBoolean';
 import { getErrorMessage } from './ErrorMessages';
+import './CSS/WorkLoadCS.css';
 
 //Component Definition
 export default function WorkLoadComponent(){
@@ -22,6 +23,7 @@ export default function WorkLoadComponent(){
 
     const [emptyTable, setEmptyTable] = useState(false);
     const [displayData, setDisplayData] = useState(true);
+    const [invokeGetWorkLoadData, setInvokeGetWorkLoadData] = useState(true);
     
     const htmlIds = {
         clas: 'clas',
@@ -221,7 +223,11 @@ export default function WorkLoadComponent(){
                 setItems(table);
             }
         };
-    }, []);
+        if(invokeGetWorkLoadData){
+            getWorkLoadData();
+            setInvokeGetWorkLoadData(false);
+        }
+    }, [invokeGetWorkLoadData]);
 
     return (
         <div>
@@ -282,9 +288,13 @@ export default function WorkLoadComponent(){
 }
 
 /*
-1) Add CSS to this component
-2) Develop WorkLoadJSRE.jsx once components, functions, and css is done - all current imports are done
+1) Develop WorkLoadCS.css
+2) Add to package.json as project develops
 3) Run this project
 4) Add error messaging as project develops
-5) Create submit function - in progress until create and update function is done
+5) Test project
+6) Debug project
+7) Develop App.js - created file and dragged over code from previous file
+8) Develop App.css - created file
+9) Develop index.js - created Index component and currently having it passed to ReactDOM.render
 */

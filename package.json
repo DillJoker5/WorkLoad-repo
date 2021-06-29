@@ -1,0 +1,26 @@
+{
+  "name": "workloadproject",
+  "version": "1.0.0",
+  "description": "WorkLoad Summer 2021 project\r Dylan was here",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DillJoker5/WorkLoad-repo.git"
+  },
+  "author": "Dylan Chirigotis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DillJoker5/WorkLoad-repo/issues"
+  },
+  "homepage": "https://github.com/DillJoker5/WorkLoad-repo#readme",
+  "dependencies": {
+    "enzyme": "^3.11.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
