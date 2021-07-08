@@ -296,8 +296,8 @@ export default function WorkLoadComponent(){
 7) Develop App.css - created file
 8) Develop index.js as project goes on
 9) Develop index.css as project goes on
-10) Develop ErrorMessages unit tests - created file
-11) Develop App unit tests - created file
-12) Develop WorkLoadComponent unit tests - created file
-13) Develop translateBoolean unit tests - created file
+10) Develop ErrorMessages unit tests - run and get all tests to pass
+11) Develop App unit tests - develop more tests if App component is expanded
+12) Develop WorkLoadComponent unit tests - do work in progress tests and make sure all tests pass
+13) Develop translateBoolean unit tests - run and get all tests to pass
 */

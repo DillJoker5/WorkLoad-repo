@@ -10,6 +10,6 @@ export default function getErrorMessage(errorMessageName){
         return ErrorMessage[errorMessageName];
     }
     else{
-        return 'Please input an error message name into this function!';
+        return;
     }
 }

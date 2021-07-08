@@ -1,6 +1,9 @@
 export default function TranslateBoolean (value) {
-    if(value) {
+    if(value !== true || value !== false)return;
+    else if(value) {
         return "Yes";
     }
-    return "No";
+    else{
+        return "No";
+    }
 }
