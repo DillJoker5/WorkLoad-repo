@@ -50,7 +50,7 @@ export default function WorkLoadComponent(){
         setDisplayData(false);
     };
 
-    const showUpdatePage = (updateItemName) => {
+    const showUpdatePage = () => {
         setUpdatePage(true);
         setEmptyTable(true);
         setDisplayData(false);
@@ -60,7 +60,7 @@ export default function WorkLoadComponent(){
         setEmptyTable(true);
         setDisplayData(false);
 
-        if(deleteItem.id){
+        if(deleteItem !== null){
             for(let i = 0; i < items.length; i++){
                 if(items.id === deleteItem.id){
                     items.splice(i, 1);
@@ -74,14 +74,14 @@ export default function WorkLoadComponent(){
     };
 
     const toggleDisplayData = (event) => {
-        if(event.target.value === displayOn){
+        if(event.target.innerText === 'Display On'){
             setEmptyTable(false);
             setDisplayData(true);
             setDisplayOn(true);
             setDisplayOff(false);
             return;
         }
-        else if(event.target.value === displayOff){
+        else if(event.target.innerText === 'Display Off'){
             setEmptyTable(true);
             setDisplayData(false);
             setDisplayOn(false);
@@ -149,96 +149,94 @@ export default function WorkLoadComponent(){
         }
     }
 
-    useEffect(() => {
-        const getWorkLoadData = () => {
+    const getWorkLoadData = () => {
+        setEmptyTable(true);
+        setDisplayData(false);
+
+        const response = [
+            {
+                id: 'item1',
+                clas: 'CSC 391',
+                project: 'self REACT project',
+                description: 'programming project',
+                dueDate: 'August 20th',
+                isImportant: true
+            },
+            {
+                id: 'item2',
+                clas: 'none',
+                project: 'User Permissions Project',
+                description: '2021 internship project for the admin portion of HealthIOs portal',
+                dueDate: 'August 20th',
+                isImportant: true
+            },
+            {
+                id: 'item3',
+                clas: 'none',
+                project: 'Unity Personal Learning',
+                description: 'summer personal learning project',
+                dueDate: 'None',
+                isImportant: false
+            }
+        ];
+
+        if(typeof response === 'string'){
             setEmptyTable(true);
             setDisplayData(false);
-
-            const response = [
-                {
-                    id: 'item1',
-                    clas: 'CSC 391',
-                    project: 'self REACT project',
-                    description: 'programming project',
-                    dueDate: 'August 20th',
-                    isImportant: true
-                },
-                {
-                    id: 'item2',
-                    clas: 'none',
-                    project: 'User Permissions Project',
-                    description: '2021 internship project for the admin portion of HealthIOs portal',
-                    dueDate: 'August 20th',
-                    isImportant: true
-                },
-                {
-                    id: 'item3',
-                    clas: 'none',
-                    project: 'Unity Personal Learning',
-                    description: 'summer personal learning project',
-                    dueDate: 'None',
-                    isImportant: false
-                }
-            ];
-
-            if(typeof response === 'string'){
-                setEmptyTable(true);
-                setDisplayData(false);
-            }
-            else if(typeof response === 'object'){
-                setEmptyTable(false);
-                setDisplayData(true);
-                const rows = response.map(function (itemRep, i) {
-                    setClas(itemRep.clas);
-                    setProject(itemRep.project);
-                    setDescription(itemRep.description);
-                    setDueDate(itemRep.dueDate);
-                    setIsImportant(itemRep.isImportant);
-                    const numOfItems = ++i;
-                    const itemId = itemRep.id;
-                    return (
-                        <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
-                            <td>{itemRep.clas}</td>
-                            <td>{itemRep.project}</td>
-                            <td>{itemRep.description}</td>
-                            <td>{itemRep.dueDate}</td>
-                            <td>{TranslateBoolean(itemRep.isImportant)}</td>
-                        </tr>
-                    );
-                });
-                const table = (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Class</th>
-                                <th>Project</th>
-                                <th>Description</th>
-                                <th>DueDate</th>
-                                <th>IsImportant</th>
-                            </tr>
-                        </thead>
-                        <tbody>{rows}</tbody>
-                    </table>
-                );
-                setItems(table);
-            }
-        };
-        if(invokeGetWorkLoadData){
-            getWorkLoadData();
-            setInvokeGetWorkLoadData(false);
         }
-    }, [invokeGetWorkLoadData]);
+        else if(typeof response === 'object'){
+            setEmptyTable(false);
+            setDisplayData(true);
+            const rows = response.map(function (itemRep, i) {
+                setClas(itemRep.clas);
+                setProject(itemRep.project);
+                setDescription(itemRep.description);
+                setDueDate(itemRep.dueDate);
+                setIsImportant(itemRep.isImportant);
+                const numOfItems = ++i;
+                const itemId = itemRep.id;
+                return (
+                    <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
+                        <td onClick={() => showUpdatePage}>{itemRep.clas}</td>
+                        <td onClick={() => showUpdatePage}>{itemRep.project}</td>
+                        <td onClick={() => showUpdatePage}>{itemRep.description}</td>
+                        <td onClick={() => showUpdatePage}>{itemRep.dueDate}</td>
+                        <td onClick={() => showUpdatePage}>{TranslateBoolean(itemRep.isImportant)}</td>
+                    </tr>
+                );
+            });
+            const table = (
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Project</th>
+                            <th>Description</th>
+                            <th>DueDate</th>
+                            <th>IsImportant</th>
+                        </tr>
+                    </thead>
+                    <tbody>{rows}</tbody>
+                </table>
+            );
+            setItems(table);
+        }
+    };
+    if(invokeGetWorkLoadData){
+        getWorkLoadData();
+        setInvokeGetWorkLoadData(false);
+    }
 
     return (
         <div>
             <div className='buttons'>
-                <button className='createButton' onClick={showCreatePage}>Create Item</button>
-                <button className='updateButton' onClick={showUpdatePage}>Update Item</button>
-                <button className='deleteButton' onClick={deleteWorkLoadItem}>Delete Item</button>
-                {displayData && <button onClick={() => showItems()}>{backText}</button>}
+                <button onClick={showCreatePage}>Create Item</button>
+                <button onClick={showUpdatePage}>Update Item</button>
+                <button>Delete Item</button>
+                {!displayOn && !displayOff && !displayData && <button onClick={() => showItems()}>{backText}</button>}
             </div>
-            <h1>WorkLoad List</h1>
             {emptyTable && displayEmptyTableMessage}
+            {!emptyTable && items}
             {createPage && (
                 <div className=''>
                     <form autoComplete='off' className=''>
@@ -277,27 +275,25 @@ export default function WorkLoadComponent(){
                     </div>
                 </div>
             )}
-            <div className='buttons'>
-                <button value={displayOn} className='displayDataButton' onClick={toggleDisplayData}>Display On</button>
-                <button value={displayOff} className='displayDataButton' onClick={toggleDisplayData}>Display Off</button>
-            </div>
+            {!updatePage && !createPage && (<div>
+                <button value={displayOn} onClick={(e) => toggleDisplayData(e)}>Display On</button>
+                <button value={displayOff} onClick={(e) => toggleDisplayData(e)}>Display Off</button>
+            </div>)}
             {message}
         </div>
     );
 }
 
 /*
-1) Develop WorkLoadCS.css
-2) Add to package.json as project develops
-3) Add error messaging as project develops
-4) Test project as project develops
-5) Debug project as project develops
-6) Develop App.js - created file and dragged over code from previous file
-7) Develop App.css - created file
-8) Develop index.js as project goes on
-9) Develop index.css as project goes on
-10) Develop ErrorMessages unit tests - run and get all tests to pass
-11) Develop App unit tests - develop more tests if App component is expanded
-12) Develop WorkLoadComponent unit tests - do work in progress tests and make sure all tests pass
-13) Develop translateBoolean unit tests - run and get all tests to pass
+1) Add to package.json as project develops
+2) Add error messaging as project develops
+3) Test project as project develops
+4) Debug project as project develops
+5) Develop index.css as project goes on
+6) Develop App unit tests - develop more tests if App component is expanded
+7) Develop WorkLoadComponent unit tests - do work in progress tests and make sure all tests pass
+8) Develop translateBoolean unit tests - run and get all tests to pass - validArg tests aren't working
+9) Create Page & Functionality
+10) Update Page & Functionality
+11) Get Enzyme and shallow setup correctly in project
 */

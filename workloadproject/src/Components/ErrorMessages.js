@@ -6,8 +6,11 @@ const ErrorMessage = {
 };
 
 export default function getErrorMessage(errorMessageName){
-    if(errorMessageName){
-        return ErrorMessage[errorMessageName];
+    if(errorMessageName === 'toggleDisplay' || errorMessageName === 'emptyTable' || errorMessageName === 'itemWithNoId' || errorMessageName === 'cannotRetrieveHTMLElements'){
+        if(ErrorMessage[errorMessageName]){
+            return ErrorMessage[errorMessageName];
+        }
+        return;
     }
     else{
         return;
