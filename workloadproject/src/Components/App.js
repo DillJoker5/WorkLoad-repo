@@ -10,6 +10,7 @@ export default function App() {
         <div className="main-div">
             <h1>WorkLoad List</h1>
             <WorkLoadComponent />
+            <footer><a href='https://www.linkedin.com/in/dylan-chirigotis-5746501b8/'>My LinkedIn Profile</a></footer>
         </div>
     );
 }

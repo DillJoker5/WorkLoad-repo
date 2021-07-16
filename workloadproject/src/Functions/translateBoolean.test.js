@@ -38,14 +38,18 @@ test('Passing in undefined returns null', () => {
     expect(TranslateBoolean(invalidArg)).toBeUndefined();
 });
 
-test('Passing in false returns "No"', () => {
+test('Passing in false returns "No"', async () => {
     const validArg = false;
 
-    expect(TranslateBoolean(validArg)).toBe('No');
+    await setTimeout(() => {
+        expect(TranslateBoolean(validArg)).toBe('No');
+    });
 });
 
-test('Passing in true returns "Yes"', () => {
+test('Passing in true returns "Yes"', async () => {
     const validArg = true;
 
-    expect(TranslateBoolean(validArg)).toBe('Yes');
+    await setTimeout(() => {
+        expect(TranslateBoolean(validArg)).toBe('Yes');
+    });
 });

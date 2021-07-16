@@ -74,14 +74,14 @@ export default function WorkLoadComponent(){
     };
 
     const toggleDisplayData = (event) => {
-        if(event.target.innerText === 'Display On'){
+        if(event !== undefined && event.target.innerText === 'Display On'){
             setEmptyTable(false);
             setDisplayData(true);
             setDisplayOn(true);
             setDisplayOff(false);
             return;
         }
-        else if(event.target.innerText === 'Display Off'){
+        else if(event !== undefined && event.target.innerText === 'Display Off'){
             setEmptyTable(true);
             setDisplayData(false);
             setDisplayOn(false);
@@ -290,10 +290,10 @@ export default function WorkLoadComponent(){
 3) Test project as project develops
 4) Debug project as project develops
 5) Develop index.css as project goes on
-6) Develop App unit tests - develop more tests if App component is expanded
-7) Develop WorkLoadComponent unit tests - do work in progress tests and make sure all tests pass
-8) Develop translateBoolean unit tests - run and get all tests to pass - validArg tests aren't working
-9) Create Page & Functionality
-10) Update Page & Functionality
-11) Get Enzyme and shallow setup correctly in project
+6) Develop App unit tests - create more if App component expands
+7) Develop WorkLoadComponent unit tests - create button test, update button test, delete button test
+8) Create Page & Functionality
+9) Update Page & Functionality
+10) Delete Item Functionality
+11) Clean-up after project is done
 */
