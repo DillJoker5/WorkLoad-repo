@@ -4,6 +4,34 @@ import TranslateBoolean from '../Functions/translateBoolean';
 import getErrorMessage from './ErrorMessages';
 import '../CSS/WorkLoadCS.css';
 
+let workLoadDataBase;
+
+window.addEventListener('load', () => {
+    let request = window.indexedDB.open('workLoad_db', 1);
+    request.onerror = () => {
+        alert('Database Failed!');
+    }
+
+    request.onsuccess = () => {
+        workLoadDataBase = request.result;
+    }
+
+    request.onupgradeneeded = e => {
+        let workLoadDataBase = e.target.result;
+        let objectStore = workLoadDataBase.createObjectStore('workLoad_os', {
+            keyPath: 'id',
+            autoIncrement: true
+        });
+        objectStore.createIndex('class', 'class', {unique: false});
+        objectStore.createIndex('project', 'project', {unique: false});
+        objectStore.createIndex('description', 'description', {unique: false});
+        objectStore.createIndex('dueDate', 'dueDate', {unique: false});
+        objectStore.createIndex('isImportant', 'isImportant', {unique: false});
+    }
+
+    console.log('Successfully created database!');
+});
+
 //Component Definition
 export default function WorkLoadComponent(){
     const backText = 'BACK';
@@ -24,6 +52,33 @@ export default function WorkLoadComponent(){
     const [emptyTable, setEmptyTable] = useState(false);
     const [displayData, setDisplayData] = useState(true);
     const [invokeGetWorkLoadData, setInvokeGetWorkLoadData] = useState(true);
+
+    const response = [
+        {
+            id: 'item1',
+            clas: 'CSC 391',
+            project: 'self REACT project',
+            description: 'programming project',
+            dueDate: 'August 20th',
+            isImportant: true
+        },
+        {
+            id: 'item2',
+            clas: 'none',
+            project: 'User Permissions Project',
+            description: '2021 internship project for the admin portion of HealthIOs portal',
+            dueDate: 'August 20th',
+            isImportant: true
+        },
+        {
+            id: 'item3',
+            clas: 'none',
+            project: 'Unity Personal Learning',
+            description: 'summer personal learning project',
+            dueDate: 'None',
+            isImportant: false
+        }
+    ];
     
     const htmlIds = {
         clas: 'clas',
@@ -40,9 +95,12 @@ export default function WorkLoadComponent(){
     };
 
     const showItems = () => {
-        setDisplayData(false);
+        setDisplayData(true);
         setMessage(null);
-    }
+        setCreatePage(false);
+        setUpdatePage(false);
+        setEmptyTable(false);
+    };
 
     const showCreatePage = () => {
         setCreatePage(true);
@@ -111,14 +169,14 @@ export default function WorkLoadComponent(){
         const dueDateHtml = document.getElementById(htmlIds.dueDate);
         const isImportantHtml = document.getElementById(htmlIds.isImportant);
 
-        if(!clasHtml || !projectHtml || !descriptionHtml || !dueDateHtml || isImportantHtml){
+        if(!clasHtml || !projectHtml || !descriptionHtml || !dueDateHtml || !isImportantHtml){
             setMessage(getErrorMessage('cannotRetrieveHTMLElements'));
             return;
         }
 
         let id;
 
-        if(currentItem.id){
+        if(currentItem){
             id = currentItem.id;
         }
         else{
@@ -135,7 +193,7 @@ export default function WorkLoadComponent(){
             isImportant: isImportantHtml.value
         }
 
-        if(items.includes(item.id)){
+        /*if(items.includes(item.id)){
             for(let i = 0; i < items.length; i++){
                 if(items[i].id === item.id){
                     items[i] = item;
@@ -146,7 +204,19 @@ export default function WorkLoadComponent(){
         else{
             items.push(item);
             alert('Successfully added ' + item + ' to the work load list!');
-        }
+        }*/
+        let transcation = workLoadDataBase.transcation(['workLoad_os'], 'readwrite');
+        let objectStore = transcation.objectStore('workLoad_os');
+        let request = objectStore.add(item);
+
+        transcation.oncomplete = () => {
+            //call back button function
+            console.log('Created workLoadItem');
+        };
+
+        transcation.onerror = () => {
+            console.log('Failed to add workLoad item');
+        };
     }
 
     const getWorkLoadData = () => {
@@ -197,6 +267,7 @@ export default function WorkLoadComponent(){
                 const itemId = itemRep.id;
                 return (
                     <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
+                        <td>{numOfItems}</td>
                         <td onClick={() => showUpdatePage}>{itemRep.clas}</td>
                         <td onClick={() => showUpdatePage}>{itemRep.project}</td>
                         <td onClick={() => showUpdatePage}>{itemRep.description}</td>
@@ -209,6 +280,7 @@ export default function WorkLoadComponent(){
                 <table>
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Class</th>
                             <th>Project</th>
                             <th>Description</th>
@@ -240,16 +312,26 @@ export default function WorkLoadComponent(){
             {createPage && (
                 <div className=''>
                     <form autoComplete='off' className=''>
-                        <label htmlFor={htmlIds.clas}>Class: </label>
-                        <input id={htmlIds.clas} />
-                        <label htmlFor={htmlIds.project}>Project: </label>
-                        <input id ={htmlIds.project} />
-                        <label htmlFor={htmlIds.description}>Description: </label>
-                        <input id={htmlIds.description} />
-                        <label htmlFor={htmlIds.dueDate}>Due Date: </label>
-                        <input id={htmlIds.dueDate} />
-                        <label htmlFor={htmlIds.isImportant}>Is this item important: </label>
-                        <input id={htmlIds.isImportant} />
+                        <div>
+                            <label htmlFor={htmlIds.clas}>Class: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.clas} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.project}>Project: </label>
+                            <input className='create-and-update-boxes' id ={htmlIds.project} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.description}>Description: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.description} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.dueDate}>Due Date: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.dueDate} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.isImportant}>Important: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.isImportant} />
+                        </div>
                     </form>
                     <div className=''>
                         <button onClick={() => submit()}>SUBMIT</button>
@@ -259,16 +341,26 @@ export default function WorkLoadComponent(){
             {updatePage && (
                 <div className=''>
                     <form autoComplete='off' className=''>
-                        <label htmlFor={htmlIds.clas}>Class: </label>
-                        <input id={htmlIds.clas} defaultValue={currentItem.clas} />
-                        <label htmlFor={htmlIds.project}>Project: </label>
-                        <input id ={htmlIds.project} defaultValue={currentItem.project} />
-                        <label htmlFor={htmlIds.description}>Description: </label>
-                        <input id={htmlIds.description} defaultValue={currentItem.description} />
-                        <label htmlFor={htmlIds.dueDate}>Due Date: </label>
-                        <input id={htmlIds.dueDate} defaultValue={currentItem.dueDate} />
-                        <label htmlFor={htmlIds.isImportant}>Is this item important: </label>
-                        <input id={htmlIds.isImportant} defaultValue={currentItem.isImportant} />
+                        <div>
+                            <label htmlFor={htmlIds.clas}>Class: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.clas} defaultValue={currentItem.clas} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.project}>Project: </label>
+                            <input className='create-and-update-boxes' id ={htmlIds.project} defaultValue={currentItem.project} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.description}>Description: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.description} defaultValue={currentItem.description} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.dueDate}>Due Date: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.dueDate} defaultValue={currentItem.dueDate} />
+                        </div>
+                        <div>
+                            <label htmlFor={htmlIds.isImportant}>Important: </label>
+                            <input className='create-and-update-boxes' id={htmlIds.isImportant} defaultValue={currentItem.isImportant} />
+                        </div>
                     </form>
                     <div className=''>
                         <button onClick={() => submit()}>SUBMIT</button>
@@ -286,14 +378,14 @@ export default function WorkLoadComponent(){
 
 /*
 1) Add to package.json as project develops
-2) Add error messaging as project develops
+2) Add error messaging as project develops - database creation failed msg
 3) Test project as project develops
 4) Debug project as project develops
 5) Develop index.css as project goes on
 6) Develop App unit tests - create more if App component expands
 7) Develop WorkLoadComponent unit tests - create button test, update button test, delete button test
-8) Create Page & Functionality
-9) Update Page & Functionality
-10) Delete Item Functionality
+8) Create Page & Functionality - have submit function set up now get database to display to table
+9) Update Page & Functionality - not started
+10) Delete Item Functionality - not started
 11) Clean-up after project is done
 */

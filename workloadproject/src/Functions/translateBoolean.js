@@ -1,5 +1,5 @@
 export default function TranslateBoolean (value) {
-    if(value !== true || value !== false)return;
+    if(typeof value === 'string' || typeof value === 'bigint' || typeof value === 'function' || typeof value === 'number' || typeof value === 'object' || typeof value === 'string' || typeof value === 'symbol' || typeof value === 'undefined')return;
     else if(value) {
         return 'Yes';
     }
