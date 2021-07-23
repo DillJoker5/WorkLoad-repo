@@ -1,5 +1,5 @@
 //imports
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TranslateBoolean from '../Functions/translateBoolean';
 import getErrorMessage from './ErrorMessages';
 import '../CSS/WorkLoadCS.css';
@@ -9,7 +9,7 @@ let workLoadDataBase;
 window.addEventListener('load', () => {
     let request = window.indexedDB.open('workLoad_db', 1);
     request.onerror = () => {
-        alert('Database Failed!');
+        getErrorMessage('failedDatabase');
     }
 
     request.onsuccess = () => {
@@ -30,6 +30,7 @@ window.addEventListener('load', () => {
     }
 
     console.log('Successfully created database!');
+    console.log(workLoadDataBase);
 });
 
 //Component Definition
@@ -53,7 +54,7 @@ export default function WorkLoadComponent(){
     const [displayData, setDisplayData] = useState(true);
     const [invokeGetWorkLoadData, setInvokeGetWorkLoadData] = useState(true);
 
-    const response = [
+    /*const response = [
         {
             id: 'item1',
             clas: 'CSC 391',
@@ -78,7 +79,7 @@ export default function WorkLoadComponent(){
             dueDate: 'None',
             isImportant: false
         }
-    ];
+    ];*/
     
     const htmlIds = {
         clas: 'clas',
@@ -92,6 +93,7 @@ export default function WorkLoadComponent(){
         setCurrentItem(item);
         setDisplayData(true);
         setMessage(null);
+        showUpdatePage();
     };
 
     const showItems = () => {
@@ -207,72 +209,38 @@ export default function WorkLoadComponent(){
         }*/
         let transcation = workLoadDataBase.transcation(['workLoad_os'], 'readwrite');
         let objectStore = transcation.objectStore('workLoad_os');
-        let request = objectStore.add(item);
+        objectStore.add(item);
 
         transcation.oncomplete = () => {
-            //call back button function
-            console.log('Created workLoadItem');
+            setMessage('Successfully created workload item');
+            showItems();
         };
 
         transcation.onerror = () => {
-            console.log('Failed to add workLoad item');
+            getErrorMessage('failedAddItem');
         };
     }
 
     const getWorkLoadData = () => {
-        setEmptyTable(true);
-        setDisplayData(false);
+        setEmptyTable(false);
+        setDisplayData(true);
 
-        const response = [
-            {
-                id: 'item1',
-                clas: 'CSC 391',
-                project: 'self REACT project',
-                description: 'programming project',
-                dueDate: 'August 20th',
-                isImportant: true
-            },
-            {
-                id: 'item2',
-                clas: 'none',
-                project: 'User Permissions Project',
-                description: '2021 internship project for the admin portion of HealthIOs portal',
-                dueDate: 'August 20th',
-                isImportant: true
-            },
-            {
-                id: 'item3',
-                clas: 'none',
-                project: 'Unity Personal Learning',
-                description: 'summer personal learning project',
-                dueDate: 'None',
-                isImportant: false
-            }
-        ];
-
-        if(typeof response === 'string'){
-            setEmptyTable(true);
-            setDisplayData(false);
-        }
-        else if(typeof response === 'object'){
-            setEmptyTable(false);
-            setDisplayData(true);
-            const rows = response.map(function (itemRep, i) {
-                setClas(itemRep.clas);
-                setProject(itemRep.project);
-                setDescription(itemRep.description);
-                setDueDate(itemRep.dueDate);
-                setIsImportant(itemRep.isImportant);
+        const rows = response.map(function (itemRep, i) {
+            setClas(itemRep.clas);
+            setProject(itemRep.project);
+            setDescription(itemRep.description);
+            setDueDate(itemRep.dueDate);
+            setIsImportant(itemRep.isImportant);
                 const numOfItems = ++i;
                 const itemId = itemRep.id;
                 return (
                     <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
                         <td>{numOfItems}</td>
-                        <td onClick={() => showUpdatePage}>{itemRep.clas}</td>
-                        <td onClick={() => showUpdatePage}>{itemRep.project}</td>
-                        <td onClick={() => showUpdatePage}>{itemRep.description}</td>
-                        <td onClick={() => showUpdatePage}>{itemRep.dueDate}</td>
-                        <td onClick={() => showUpdatePage}>{TranslateBoolean(itemRep.isImportant)}</td>
+                        <td onClick={() => showItem(itemRep)}>{itemRep.clas}</td>
+                        <td onClick={() => showItem(itemRep)}>{itemRep.project}</td>
+                        <td onClick={() => showItem(itemRep)}>{itemRep.description}</td>
+                        <td onClick={() => showItem(itemRep)}>{itemRep.dueDate}</td>
+                        <td onClick={() => showItem(itemRep)}>{TranslateBoolean(itemRep.isImportant)}</td>
                     </tr>
                 );
             });
@@ -303,7 +271,6 @@ export default function WorkLoadComponent(){
         <div>
             <div className='buttons'>
                 <button onClick={showCreatePage}>Create Item</button>
-                <button onClick={showUpdatePage}>Update Item</button>
                 <button>Delete Item</button>
                 {!displayOn && !displayOff && !displayData && <button onClick={() => showItems()}>{backText}</button>}
             </div>
@@ -378,14 +345,14 @@ export default function WorkLoadComponent(){
 
 /*
 1) Add to package.json as project develops
-2) Add error messaging as project develops - database creation failed msg
+2) Add error messaging as project develops
 3) Test project as project develops
 4) Debug project as project develops
 5) Develop index.css as project goes on
 6) Develop App unit tests - create more if App component expands
-7) Develop WorkLoadComponent unit tests - create button test, update button test, delete button test
+7) Develop WorkLoadComponent unit tests - delete button test
 8) Create Page & Functionality - have submit function set up now get database to display to table
-9) Update Page & Functionality - not started
+9) Update Page & Functionality - page renders
 10) Delete Item Functionality - not started
 11) Clean-up after project is done
 */

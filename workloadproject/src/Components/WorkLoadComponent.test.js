@@ -19,18 +19,13 @@ test('page is rendered', () => {
     expect(wrapper.find('th').at(3)).toBeDefined;
     expect(wrapper.find('th').at(4)).toBeDefined;
     expect(wrapper.find('tr').at(0)).toBeDefined;
+    expect(wrapper.find('footer')).toBeDefined;
 });
 
 test('create button is rendered', () => {
     const wrapper = shallow(<WorkLoadComponent />);
 
     expect(wrapper.containsAnyMatchingElements([<button>Create Item</button>])).toEqual(true);
-});
-
-test('update button is rendered', () => {
-    const wrapper = shallow(<WorkLoadComponent />);
-
-    expect(wrapper.containsAnyMatchingElements([<button>Update Item</button>])).toEqual(true);
 });
 
 test('delete button is rendered', () => {
@@ -56,25 +51,43 @@ test('table headers are rendered', () => {
 
     const tableHeaders = wrapper.find('th');
 
-    expect(tableHeaders.length).toEqual(5);
+    expect(tableHeaders.length).toEqual(6);
 });
 
-//work in progress
-test('clicking add button takes to add item page', () => {
+test('clicking create button takes to create item page', () => {
     const wrapper = shallow(<WorkLoadComponent />);
     
     const addButton = wrapper.find('button').at(0);
 
     addButton.simulate('click');
+
+    expect(wrapper.find('button').at(0)).toBeDefined;
+    expect(wrapper.find('button').at(1)).toBeDefined;
+    expect(wrapper.find('button').at(2)).toBeDefined;
+
+    expect(wrapper.find('form')).toBeDefined;
+
+    expect(wrapper.find('button').at(3)).toBeDefined;
+
+    expect(wrapper.find('footer')).toBeDefined;
 });
 
-//work in progress
 test('clicking update button takes to update item page', () => {
     const wrapper = shallow(<WorkLoadComponent />);
 
     const updateButton = wrapper.find('button').at(1);
 
     updateButton.simulate('click');
+
+    expect(wrapper.find('button').at(0)).toBeDefined;
+    expect(wrapper.find('button').at(1)).toBeDefined;
+    expect(wrapper.find('button').at(2)).toBeDefined;
+
+    expect(wrapper.find('form')).toBeDefined;
+
+    expect(wrapper.find('button').at(3)).toBeDefined;
+
+    expect(wrapper.find('footer')).toBeDefined;
 });
 
 //work in progress
@@ -89,7 +102,7 @@ test('clicking delete button deletes the desired item in the list', () => {
 test('clicking display on button causes table to be shown', async () => {
     const wrapper = shallow(<WorkLoadComponent />);
 
-    const toggleOnButton = wrapper.find('button').at(3);
+    const toggleOnButton = wrapper.find('button').at(2);
 
     toggleOnButton.simulate('click');
 
@@ -101,7 +114,7 @@ test('clicking display on button causes table to be shown', async () => {
 test('clicking display off button causes table to not be shown', async () => {
     const wrapper = shallow(<WorkLoadComponent />);
 
-    const toggleOffButton = wrapper.find('button').at(4);
+    const toggleOffButton = wrapper.find('button').at(3);
 
     toggleOffButton.simulate('click');
 
