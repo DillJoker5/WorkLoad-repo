@@ -3,38 +3,11 @@ import React, { useState } from "react";
 import TranslateBoolean from '../Functions/translateBoolean';
 import getErrorMessage from './ErrorMessages';
 import '../CSS/WorkLoadCS.css';
-
-let workLoadDataBase;
-
-window.addEventListener('load', () => {
-    let request = window.indexedDB.open('workLoad_db', 1);
-    request.onerror = () => {
-        getErrorMessage('failedDatabase');
-    }
-
-    request.onsuccess = () => {
-        workLoadDataBase = request.result;
-    }
-
-    request.onupgradeneeded = e => {
-        let workLoadDataBase = e.target.result;
-        let objectStore = workLoadDataBase.createObjectStore('workLoad_os', {
-            keyPath: 'id',
-            autoIncrement: true
-        });
-        objectStore.createIndex('class', 'class', {unique: false});
-        objectStore.createIndex('project', 'project', {unique: false});
-        objectStore.createIndex('description', 'description', {unique: false});
-        objectStore.createIndex('dueDate', 'dueDate', {unique: false});
-        objectStore.createIndex('isImportant', 'isImportant', {unique: false});
-    }
-
-    console.log('Successfully created database!');
-    console.log(workLoadDataBase);
-});
+import { workLoadDataBase } from '../index';
 
 //Component Definition
 export default function WorkLoadComponent(){
+    console.log(workLoadDataBase);
     const backText = 'BACK';
 
     const [items, setItems] = useState([]);
@@ -54,7 +27,7 @@ export default function WorkLoadComponent(){
     const [displayData, setDisplayData] = useState(true);
     const [invokeGetWorkLoadData, setInvokeGetWorkLoadData] = useState(true);
 
-    /*const response = [
+    const response = [
         {
             id: 'item1',
             clas: 'CSC 391',
@@ -79,14 +52,15 @@ export default function WorkLoadComponent(){
             dueDate: 'None',
             isImportant: false
         }
-    ];*/
+    ];
     
     const htmlIds = {
         clas: 'clas',
         project: 'project',
         description: 'description',
         dueDate: 'dueDate',
-        isImportant: 'isImportant'
+        isImportant: 'isImportant',
+        rows: 'rows'
     };
 
     const showItem = (item) => {
@@ -195,72 +169,82 @@ export default function WorkLoadComponent(){
             isImportant: isImportantHtml.value
         }
 
-        /*if(items.includes(item.id)){
-            for(let i = 0; i < items.length; i++){
-                if(items[i].id === item.id){
-                    items[i] = item;
-                }
-            }
-            alert('Successfully updated ' + item + ' in the work load list!');
-        }
-        else{
-            items.push(item);
-            alert('Successfully added ' + item + ' to the work load list!');
-        }*/
-        let transcation = workLoadDataBase.transcation(['workLoad_os'], 'readwrite');
-        let objectStore = transcation.objectStore('workLoad_os');
+        let transaction = workLoadDataBase.transaction(['workLoadProject_os'], 'readwrite');
+        let objectStore = transaction.objectStore('workLoadProject_os');
         objectStore.add(item);
 
-        transcation.oncomplete = () => {
+        transaction.oncomplete = () => {
             setMessage('Successfully created workload item');
             showItems();
         };
 
-        transcation.onerror = () => {
+        transaction.onerror = () => {
             getErrorMessage('failedAddItem');
         };
     }
 
-    const getWorkLoadData = () => {
+    const getWorkLoadData = async () => {
         setEmptyTable(false);
         setDisplayData(true);
 
+        /*const rows = document.getElementById(htmlIds.rows);
+        let objectStore = workLoadDataBase.transaction('workLoadProject_os').objectStore('workLoadProject_os');
+        objectStore.openCursor().onsuccess = e => {
+            let cursor = e.target.result;
+            if(cursor){
+                let row = <tr >
+                    <td >cursor.value.clas</td>
+                    <td >cursor.value.project</td>
+                    <td >cursor.value.description</td>
+                    <td >cursor.value.dueDate</td>
+                    <td >{TranslateBoolean(cursor.value.isImportant)}</td>
+                </tr>;
+                rows.appendChild(row);
+            }
+            else{
+                if(!rows.firstChild){
+                    let row = <tr>
+                        <td>YOU HAVE NO DATA!</td>
+                    </tr>
+                    row.appendChild(row);
+                }
+            }
+        }
         const rows = response.map(function (itemRep, i) {
             setClas(itemRep.clas);
             setProject(itemRep.project);
             setDescription(itemRep.description);
             setDueDate(itemRep.dueDate);
             setIsImportant(itemRep.isImportant);
-                const numOfItems = ++i;
-                const itemId = itemRep.id;
-                return (
-                    <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
-                        <td>{numOfItems}</td>
-                        <td onClick={() => showItem(itemRep)}>{itemRep.clas}</td>
-                        <td onClick={() => showItem(itemRep)}>{itemRep.project}</td>
-                        <td onClick={() => showItem(itemRep)}>{itemRep.description}</td>
-                        <td onClick={() => showItem(itemRep)}>{itemRep.dueDate}</td>
-                        <td onClick={() => showItem(itemRep)}>{TranslateBoolean(itemRep.isImportant)}</td>
-                    </tr>
+            const numOfItems = ++i;
+            const itemId = itemRep.id;
+            return (
+                <tr className='' key={itemId} onClick={() => showItem(itemRep)}>
+                    <td>{numOfItems}</td>
+                    <td onClick={() => showItem(itemRep)}>{itemRep.clas}</td>
+                    <td onClick={() => showItem(itemRep)}>{itemRep.project}</td>
+                    <td onClick={() => showItem(itemRep)}>{itemRep.description}</td>
+                    <td onClick={() => showItem(itemRep)}>{itemRep.dueDate}</td>
+                    <td onClick={() => showItem(itemRep)}>{TranslateBoolean(itemRep.isImportant)}</td>
+                </tr>
                 );
-            });
-            const table = (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Class</th>
-                            <th>Project</th>
-                            <th>Description</th>
-                            <th>DueDate</th>
-                            <th>IsImportant</th>
-                        </tr>
-                    </thead>
-                    <tbody>{rows}</tbody>
-                </table>
-            );
-            setItems(table);
-        }
+        });*/
+        const table = (
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Class</th>
+                        <th>Project</th>
+                        <th>Description</th>
+                        <th>DueDate</th>
+                        <th>IsImportant</th>
+                    </tr>
+                </thead>
+                <tbody id={htmlIds.rows}>{workLoadDataBase}</tbody>
+            </table>
+        );
+        setItems(table);
     };
     if(invokeGetWorkLoadData){
         getWorkLoadData();
@@ -351,7 +335,7 @@ export default function WorkLoadComponent(){
 5) Develop index.css as project goes on
 6) Develop App unit tests - create more if App component expands
 7) Develop WorkLoadComponent unit tests - delete button test
-8) Create Page & Functionality - have submit function set up now get database to display to table
+8) Create Page & Functionality - get database to display to table
 9) Update Page & Functionality - page renders
 10) Delete Item Functionality - not started
 11) Clean-up after project is done
